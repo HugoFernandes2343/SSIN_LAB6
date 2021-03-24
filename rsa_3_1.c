@@ -15,28 +15,49 @@ void printBN(char *msg, BIGNUM * a)
 int main ()
 {
     BN_CTX *ctx = BN_CTX_new();
+    BIGNUM *one = BN_new();
+    BN_hex2bn(&one, "1");
+
     BIGNUM *p = BN_new();
     BIGNUM *q = BN_new();
     BIGNUM *e = BN_new();
 
     // Initialize p, q, e
-    //BN_generate_prime_ex(p, NBITS, 1, NULL, NULL, NULL);
-    //BN_dec2bn(&q, "273489463796838501848592769467194369268");
-    // BN_rand(e, NBITS, 0, 0);
-
     BN_hex2bn(&p, "F7E75FDC469067FFDC4E847C51F452DF");
     BN_hex2bn(&q, "E85CED54AF57E53E092113E62F436F4F");
     BN_hex2bn(&e, "0D88C3");
 
-    BIGNUM *n = BN_new();
     // n = p*q
+    BIGNUM *n = BN_new();
     BN_mul(n, p, q, ctx);
     printBN("p * q = ", n);
 
-    BIGNUM *res = BN_new();
     // res = pˆq mod e
+    BIGNUM *res = BN_new();
     BN_mod_exp(res, p, q, e, ctx);
     printBN("pˆq mod e = ", res);
+
+    // d -> private key
+    BIGNUM *d = BN_new();
+    BIGNUM *Q = BN_new();
+    BIGNUM *Q_temp = BN_new();
+    BN_sub(Q, p, one);
+    BN_sub(Q_temp, q, one);
+    BN_mul(Q, Q, Q_temp, ctx);
+    BN_mod_inverse(d, e, Q, ctx);
+    printBN("d = ", d);
+    
+    BIGNUM *M = BN_new();
+    BN_hex2bn(&M, "4120746f702073656372657421");
+    printBN("M = ", M);
+
+    BIGNUM *C = BN_new();
+    BN_mod_exp(C, M, e, n, ctx);
+    printBN("C = ", C);
+
+    BIGNUM *D = BN_new();
+    BN_mod_exp(D, C, d, n, ctx);
+    printBN("D = ", D);
 
     return 0;
 }
