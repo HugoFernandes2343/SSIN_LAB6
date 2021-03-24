@@ -31,4 +31,5 @@ int main ()
     printBN("M = Cd mod n", res);
 
     return 0;
+
 }

@@ -25,7 +25,7 @@ int main ()
     BN_hex2bn(&e, "010001");
     BN_hex2bn(&m, "4120746f702073656372657421");
 
-    // res= m^e mod p*q
+    // res= C = m^e  mod n
     BIGNUM *res = BN_new();
     BN_mod_exp(res, m, e, n, ctx);
     printBN("mˆe mod n = ", res);
