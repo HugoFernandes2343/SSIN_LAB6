@@ -28,7 +28,7 @@ int main ()
     // M = Cd mod n
     BIGNUM *res = BN_new();
     BN_mod_exp(res, C, d, n, ctx);
-    printBN("M = Cd mod n", res);
+    printBN("M = Cd mod n \nM =", res);
 
     return 0;
 
